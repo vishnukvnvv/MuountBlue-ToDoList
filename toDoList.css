@@ -1,0 +1,38 @@
+body{
+    font-family: monospace;
+}
+.header{
+    text-align: center;
+    background: blue;
+    padding: 1%;
+    font-weight: bold;
+    font-size: 150%;
+    color: white;
+}
+#container{
+    padding: 1% 1% 1% 10%;
+    width: 80%;
+    height: 250px;
+    overflow-y: scroll;
+}
+.items{
+    padding: 1%;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+.input-bar{
+    padding: 1%;
+    margin-left: 35%;
+}
+#input{
+    border-radius: 2rem;
+    border: 2px solid grey;
+    padding: 1%;
+}
+#add-item{
+    background: green;
+    border: none;
+    border-radius: 2rem;
+    color: white;
+    padding: 1%;
+}
