@@ -31,68 +31,67 @@ function refreshDOM() {
     const itemslist = JSON.parse(localStorage.getItem('list'));
 
     // delete all the previous list items
-    container.innerHTML = '';
+    while (container.hasChildNodes()) {
+        container.removeChild(container.lastChild);
+    }
+    let i = 0;
 
     for (let list of itemslist) {
 
         // create checkbox element with class name list 
-        const newInput = document.createElement('input');
-        newInput.type = 'checkbox';
-        newInput.checked = list.status;
-        newInput.className = 'list';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = list.status;
+        input.className = 'list';
+
+        input.addEventListener('click', toggleStatus);
 
         //create text node with input text as value
-        const newItemText = document.createTextNode(list.text);
+        const text = document.createTextNode(list.text);
 
         // create a new div element
-        const newItem = document.createElement('div');
-        if(list.status){
-            newItem.style.textDecoration = 'line-through';
+        const innerDiv = document.createElement('div');
+        if (list.status) {
+            innerDiv.style.textDecoration = 'line-through';
         }
 
         // append checkbox to the div element
-        newItem.append(newInput);
+        innerDiv.append(input);
 
         //append text to the div element
-        newItem.append(newItemText);
+        innerDiv.append(text);
 
         // create delete button 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete';
         deleteBtn.textContent = 'delete';
 
-        // create outter div with class name items
-        const div = document.createElement('div');
-        div.className = 'items';
+        deleteBtn.addEventListener('click', deleteItem);
+
+        // create outter div with class name box
+        const outterDiv = document.createElement('div');
+        outterDiv.className = 'box';
+        outterDiv.setAttribute('position', i++);
+        outterDiv.draggable = 'true';
+        outterDiv.addEventListener('dragstart', dragStart);
+        outterDiv.addEventListener('dragover', dragOver);
+        outterDiv.addEventListener('dragend', dragEnd);
 
         // append new item to div
-        div.append(newItem);
-        div.append(deleteBtn);
+        outterDiv.append(innerDiv);
+        outterDiv.append(deleteBtn);
 
         // append the new div to the existing container
-        container.append(div);
-
+        container.append(outterDiv);
     }
-    //get element by class name
-    document.querySelectorAll('.list').forEach(item => {
-        item.addEventListener('click', toggleStatus);
-    });
-
-    //get elements by class name delete and iterate
-    document.querySelectorAll('.delete').forEach(item => {
-        item.addEventListener('click', deleteItem);
-    });
-
     console.log(itemslist);
-    // toggleStatus();
-    // deleteItem();
 }
 
 // get element by id add-item
 const submit = document.getElementById('add-item');
 
 // add the item the list on enter
-document.addEventListener('keyup', checkEnterPress);
+inputBox.addEventListener('keyup', checkEnterPress);
 
 // add item to the container on submit
 submit.addEventListener('click', addItem);
@@ -129,8 +128,7 @@ function addItem() {
 
 function toggleStatus() {
     // get index of element
-    const index = returnIndex(event.srcElement.parentElement.parentElement);
-
+    const index = event.srcElement.parentElement.parentElement.getAttribute('position');
     // modify the status of particular object based on index
     arrayOfListItems[index].status = event.srcElement.checked;
 
@@ -139,7 +137,7 @@ function toggleStatus() {
 
 function deleteItem() {
     // get the index of the element 
-    const index = returnIndex(event.srcElement.parentElement);
+    const index = event.srcElement.parentElement.getAttribute('position');
 
     //remove the object from the array
     arrayOfListItems.splice(index, 1);
@@ -147,13 +145,19 @@ function deleteItem() {
     updateLocalstorage();
 }
 
-// iterate through the container element and return the index of give inner element
-function returnIndex(item) {
-    // create the array of elements inside the conatiner 
-    const items = container.children;
-    for (let index in items) {
-        if (items[index] === item) {
-            return index;
-        }
-    }
+// drag functions
+let dragStartPosition;
+let dragEndPosition;
+function dragStart() {
+    dragStartPosition = event.srcElement.getAttribute('position');
+}
+
+function dragOver() {
+    dragEndPosition = event.target.getAttribute('position');
+}
+
+function dragEnd() {
+    const content = arrayOfListItems.splice(dragStartPosition, 1);
+    arrayOfListItems.splice(dragEndPosition, 0, content[0]);
+    updateLocalstorage();
 }
