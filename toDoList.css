@@ -11,14 +11,18 @@ body{
 }
 #container{
     padding: 1% 1% 1% 10%;
-    width: 80%;
+    width: 50%;
     height: 250px;
     overflow-y: scroll;
+    position: relative;
+    left: 200px;
 }
 .items{
     padding: 1%;
     border: 1px solid #ccc;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 .input-bar{
     padding: 1%;
@@ -35,4 +39,11 @@ body{
     border-radius: 2rem;
     color: white;
     padding: 1%;
+}
+.delete{
+    padding: 1%;
+    background: red;
+    color: white;
+    border-radius: 30px;
+    border: none;
 }
